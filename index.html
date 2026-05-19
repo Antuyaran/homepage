@@ -22,26 +22,33 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
+
+      font-family: "PingFang SC", "PingFangSC", "PingFang SC Regular", sans-serif;
       background: #ffffff;
-      font-family: "PingFang SC", "PingFangSC", sans-serif;
     }
 
     /* ==============================
-       Random Background Image
-       背景图撑满整个网页视口
-       每次进入页面时由 JS 随机切换
+       Random Background
+       黄色底图会撑满整个网页背景
+       手机端也直接拉伸 / 压缩适配
        ============================== */
 
     body {
-      background-size: cover;
       background-position: center center;
       background-repeat: no-repeat;
+
+      /*
+        cover 会保持图片比例，并裁切多余部分；
+        如果你想让图片完全拉伸变形撑满屏幕，可以改成：
+        background-size: 100% 100%;
+      */
+      background-size: cover;
     }
 
     /* ==============================
-       Main Layout Grid
+       Main Grid
        版心距离视口边缘各 20px
-       内部分为 6 行 12 列
+       版心平均分为 6 行 12 列
        网格不可见，只作为排版辅助
        ============================== */
 
@@ -55,16 +62,19 @@
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       grid-template-rows: repeat(6, 1fr);
-
-      pointer-events: none;
     }
 
-    /* 调试时如果想看到网格，可以临时打开这一段 */
+    /* ==============================
+       Debug Grid
+       如果之后需要检查网格位置，可以临时打开这一段
+       正式网页保持注释即可
+       ============================== */
+
     /*
     .page-grid {
       background-image:
-        linear-gradient(to right, rgba(0, 0, 0, 0.16) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.16) 1px, transparent 1px);
+        linear-gradient(to right, rgba(0, 0, 0, 0.18) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.18) 1px, transparent 1px);
       background-size:
         calc(100% / 12) 100%,
         100% calc(100% / 6);
@@ -72,9 +82,9 @@
     */
 
     /* ==============================
-       Navigation Text
-       第一行固定文字
-       首页状态：Project Name 为当前页面
+       First Row Navigation
+       第一行固定文字部分
+       所有页面都可以沿用这一套
        ============================== */
 
     .nav-item {
@@ -88,10 +98,9 @@
 
       color: #b7b7b7;
       white-space: nowrap;
-
-      pointer-events: auto;
     }
 
+    /* 首页当前页面：Project Name 是深色 */
     .project-name {
       grid-column: 1 / span 2;
       grid-row: 1;
@@ -102,60 +111,69 @@
     .intro {
       grid-column: 7 / span 1;
       grid-row: 1;
+
+      color: #b7b7b7;
     }
 
     .working-process {
-      grid-column: 8 / span 2;
+      grid-column: 10 / span 2;
       grid-row: 1;
+
+      color: #b7b7b7;
     }
 
     /* ==============================
-       Optional Link Style
-       如果之后你想让 Intro / Working Process 可以点击跳转
-       可以直接给 a 标签加 href
-       ============================== */
-
-    .nav-item a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    /* ==============================
-       Responsive Adjustment
-       缩小窗口时避免导航文字互相重叠
+       Mobile Adaptation
+       手机端直接使用同一套 12 列 6 行逻辑
+       背景继续撑满屏幕
+       文字稍微缩小，避免导航重叠
        ============================== */
 
     @media (max-width: 768px) {
+      .page-grid {
+        inset: 20px;
+
+        width: calc(100vw - 40px);
+        height: calc(100vh - 40px);
+      }
+
       .nav-item {
-        font-size: 11pt;
+        font-size: 10pt;
+      }
+
+      .project-name {
+        grid-column: 1 / span 3;
+      }
+
+      .intro {
+        grid-column: 7 / span 1;
+      }
+
+      .working-process {
+        grid-column: 10 / span 3;
       }
     }
 
-    @media (max-width: 480px) {
+    /* 更窄的手机屏幕 */
+    @media (max-width: 420px) {
       .nav-item {
-        font-size: 9pt;
+        font-size: 8.5pt;
       }
     }
   </style>
 </head>
 
 <body>
+
   <main class="page-grid">
 
     <!-- ==============================
-         第一行固定导航
-         当前页面：首页 / Project Name
+         第一行固定导航文字
          ============================== -->
 
     <div class="nav-item project-name">Project Name</div>
-
-    <div class="nav-item intro">
-      <a href="intro.html">Intro</a>
-    </div>
-
-    <div class="nav-item working-process">
-      <a href="working-process.html">Working Process</a>
-    </div>
+    <div class="nav-item intro">Intro</div>
+    <div class="nav-item working-process">Working Process</div>
 
   </main>
 
@@ -164,18 +182,36 @@
        Random Background Settings
        ============================== */
 
-    // 这里写你一共有多少张黄色底图
-    // 例如 background1.jpg 到 background8.jpg
-    const totalBackgrounds = 5;
+    /*
+      这里写你一共有多少张背景图。
 
-    // 随机生成 1 到 totalBackgrounds 之间的数字
-    const randomIndex = Math.floor(Math.random() * totalBackgrounds) + 1;
+      如果你有：
+      background1.jpg
+      background2.jpg
+      background3.jpg
+      background4.jpg
 
-    // 拼接背景图文件名
-    const randomBackground = `background${randomIndex}.jpg`;
+      就写 4。
+    */
 
-    // 设置为 body 背景
-    document.body.style.backgroundImage = `url("${randomBackground}")`;
+    const totalBackgrounds = 4;
+
+    /*
+      随机生成 1 到 totalBackgrounds 之间的数字。
+      例如生成 3，就会使用 background3.jpg。
+    */
+
+    const randomNumber = Math.floor(Math.random() * totalBackgrounds) + 1;
+
+    /*
+      设置 body 的背景图片。
+      如果你的背景图放在 background 文件夹里，
+      可以改成：
+      document.body.style.backgroundImage = `url("background/background${randomNumber}.jpg")`;
+    */
+
+    document.body.style.backgroundImage = `url("background${randomNumber}.jpg")`;
   </script>
+
 </body>
 </html>
