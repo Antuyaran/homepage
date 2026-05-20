@@ -98,6 +98,19 @@
 
       color: #b7b7b7;
       white-space: nowrap;
+      text-decoration: none;
+    }
+
+    /* 可点击的导航词组 */
+    .nav-link {
+      cursor: pointer;
+      pointer-events: auto;
+      transition: color 0.15s ease;
+    }
+
+    /* hover 时变成黄色；当前页面词组不参与 hover */
+    .nav-link:not(.current):hover {
+      color: #fff800;
     }
 
     /* 首页当前页面：Project Name 是深色 */
@@ -171,13 +184,35 @@
          第一行固定导航文字
          ============================== -->
 
-    <div class="nav-item project-name">Project Name</div>
-    <div class="nav-item intro">Intro</div>
-    <div class="nav-item working-process">Working Process</div>
+    <div class="nav-item nav-link project-name current">Project Name</div>
+    <div id="introLink" class="nav-item nav-link intro">Intro</div>
+    <a class="nav-item nav-link working-process" href="https://antuyaran.github.io/workprocess/">Working Process</a>
 
   </main>
 
   <script>
+    /* ==============================
+       Navigation Links
+       ============================== */
+
+    /*
+      点击 Intro 时，会随机跳转到 Intro1 或 Intro2。
+      点击 Working Process 时，a 标签会直接跳转到 workprocess 页面。
+      当前页面 Project Name 保持深色，不设置 hover 变色。
+    */
+
+    const introPages = [
+      "https://antuyaran.github.io/Intro1/",
+      "https://antuyaran.github.io/Intro2/"
+    ];
+
+    const introLink = document.getElementById("introLink");
+
+    introLink.addEventListener("click", () => {
+      const randomIntroIndex = Math.floor(Math.random() * introPages.length);
+      window.location.href = introPages[randomIntroIndex];
+    });
+
     /* ==============================
        Random Background Settings
        ============================== */
