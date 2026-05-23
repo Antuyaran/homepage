@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Project Name</title>
+  <title>The Unquiet Page</title>
 
   <style>
     /* ==============================
@@ -23,26 +23,21 @@
       height: 100%;
       overflow: hidden;
 
-      font-family: "PingFang SC", "PingFangSC", "PingFang SC Regular", sans-serif;
+      font-family: "American Typewriter Medium", "American Typewriter", "Courier New", monospace;
       background: #ffffff;
     }
 
     /* ==============================
        Random Background
-       黄色底图会撑满整个网页背景
-       手机端也直接拉伸 / 压缩适配
+       01.jpg - 18.jpg 会撑满整个网页背景
+       每 4 秒随机抽取一张
        ============================== */
 
     body {
       background-position: center center;
       background-repeat: no-repeat;
-
-      /*
-        cover 会保持图片比例，并裁切多余部分；
-        如果你想让图片完全拉伸变形撑满屏幕，可以改成：
-        background-size: 100% 100%;
-      */
       background-size: cover;
+      transition: background-image 0.2s ease;
     }
 
     /* ==============================
@@ -84,15 +79,16 @@
     /* ==============================
        First Row Navigation
        第一行固定文字部分
-       所有页面都可以沿用这一套
+       所有字体改为 American Typewriter Medium
        ============================== */
 
-    .nav-item {
+    .nav-item,
+    .background-info {
       align-self: start;
       justify-self: start;
 
-      font-family: "PingFang SC", "PingFangSC", sans-serif;
-      font-weight: 600;
+      font-family: "American Typewriter Medium", "American Typewriter", "Courier New", monospace;
+      font-weight: 500;
       font-size: 15pt;
       line-height: 1;
 
@@ -101,38 +97,67 @@
       text-decoration: none;
     }
 
-    /* 可点击的导航词组 */
     .nav-link {
       cursor: pointer;
       pointer-events: auto;
       transition: color 0.15s ease;
     }
 
-    /* hover 时变成黄色；当前页面词组不参与 hover */
     .nav-link:not(.current):hover {
       color: #fff800;
     }
 
-    /* 首页当前页面：Project Name 是深色 */
     .project-name {
       grid-column: 1 / span 2;
       grid-row: 1;
-
       color: #5e5e5e;
     }
 
     .intro {
       grid-column: 7 / span 1;
       grid-row: 1;
-
       color: #b7b7b7;
     }
 
     .working-process {
       grid-column: 10 / span 2;
       grid-row: 1;
-
       color: #b7b7b7;
+    }
+
+    /* ==============================
+       Background Information Text
+       第四行第一列：网页名称
+       第六行第一列：网页简要描述
+       第六行第七列：网页网址
+       ============================== */
+
+    .site-name {
+      grid-column: 1 / span 3;
+      grid-row: 4;
+      color: #5e5e5e;
+    }
+
+    .site-description {
+      grid-column: 1 / span 5;
+      grid-row: 6;
+      align-self: end;
+      color: #5e5e5e;
+      font-size: 7.5pt;
+      line-height: 1.15;
+      white-space: normal;
+      max-width: 100%;
+    }
+
+    .site-url {
+      grid-column: 7 / span 5;
+      grid-row: 6;
+      align-self: end;
+      color: #5e5e5e;
+      font-size: 7.5pt;
+      line-height: 1.15;
+      white-space: normal;
+      max-width: 100%;
     }
 
     /* ==============================
@@ -145,12 +170,12 @@
     @media (max-width: 768px) {
       .page-grid {
         inset: 20px;
-
         width: calc(100vw - 40px);
         height: calc(100vh - 40px);
       }
 
-      .nav-item {
+      .nav-item,
+      .background-info {
         font-size: 10pt;
       }
 
@@ -165,12 +190,31 @@
       .working-process {
         grid-column: 10 / span 3;
       }
+
+      .site-name {
+        grid-column: 1 / span 4;
+      }
+
+      .site-description {
+        grid-column: 1 / span 5;
+        font-size: 5pt;
+      }
+
+      .site-url {
+        grid-column: 7 / span 6;
+        font-size: 5pt;
+      }
     }
 
-    /* 更窄的手机屏幕 */
     @media (max-width: 420px) {
-      .nav-item {
+      .nav-item,
+      .background-info {
         font-size: 8.5pt;
+      }
+
+      .site-description,
+      .site-url {
+        font-size: 4.25pt;
       }
     }
   </style>
@@ -188,18 +232,21 @@
     <div id="introLink" class="nav-item nav-link intro">Intro</div>
     <a class="nav-item nav-link working-process" href="https://antuyaran.github.io/workprocess/">Working Process</a>
 
+    <!-- ==============================
+         BACKGROUND INFO TEXT OUTPUT
+         这些文本会根据随机背景图编号自动变化
+         ============================== -->
+
+    <div id="siteName" class="background-info site-name"></div>
+    <div id="siteDescription" class="background-info site-description"></div>
+    <div id="siteUrl" class="background-info site-url"></div>
+
   </main>
 
   <script>
     /* ==============================
        Navigation Links
        ============================== */
-
-    /*
-      点击 Intro 时，会随机跳转到 Intro1 或 Intro2。
-      点击 Working Process 时，a 标签会直接跳转到 workprocess 页面。
-      当前页面 Project Name 保持深色，不设置 hover 变色。
-    */
 
     const introPages = [
       "https://antuyaran.github.io/Intro1/",
@@ -215,37 +262,100 @@
 
     /* ==============================
        Random Background Settings
+       现在使用 01.jpg - 18.jpg
+       页面打开后立刻随机抽取一张，之后每 4 秒重新随机抽取一次
        ============================== */
 
-    /*
-      这里写你一共有多少张背景图。
+    const totalBackgrounds = 18;
+    const backgroundChangeInterval = 4000;
 
-      如果你有：
-      background1.jpg
-      background2.jpg
-      background3.jpg
-      background4.jpg
+    const siteNameElement = document.getElementById("siteName");
+    const siteDescriptionElement = document.getElementById("siteDescription");
+    const siteUrlElement = document.getElementById("siteUrl");
 
-      就写 4。
-    */
+    /* =========================================================
+       EDIT AREA 1: Website name / description / URL text
+       在这里修改不同编号范围对应的三个信息文本。
 
-    const totalBackgrounds = 4;
+       start / end = 背景图编号范围
+       name = 第四行第一列网页名称
+       description = 最后一行第一列网页简要描述
+       url = 最后一行第七列网页网址
+       ========================================================= */
 
-    /*
-      随机生成 1 到 totalBackgrounds 之间的数字。
-      例如生成 3，就会使用 background3.jpg。
-    */
+    const backgroundInfoGroups = [
+      {
+        start: 1,
+        end: 5,
+        name: "POLITICO",
+        description: "Political news, newsletter, and policy reading page.",
+        url: "https://www.politico.com/"
+      },
+      {
+        start: 6,
+        end: 10,
+        name: "BBC News",
+        description: "Public news platform with international reports and long-form articles.",
+        url: "https://www.bbc.co.uk/news"
+      },
+      {
+        start: 11,
+        end: 15,
+        name: "Daily Mail",
+        description: "Popular news website with entertainment, current affairs and image-heavy reading pages.",
+        url: "https://www.dailymail.co.uk/"
+      },
+      {
+        start: 16,
+        end: 18,
+        name: "Nautilus",
+        description: "Essay-based science and culture magazine with long-form reading pages.",
+        url: "https://nautil.us/"
+      }
+    ];
 
-    const randomNumber = Math.floor(Math.random() * totalBackgrounds) + 1;
+    /* =========================================================
+       EDIT AREA 2: Background image filename format
+       当前格式为 01.jpg, 02.jpg ... 18.jpg。
+       如果之后图片放进文件夹，例如 backgrounds/01.jpg，
+       把 return 改成：return `backgrounds/${fileNumber}.jpg`;
+       ========================================================= */
 
-    /*
-      设置 body 的背景图片。
-      如果你的背景图放在 background 文件夹里，
-      可以改成：
-      document.body.style.backgroundImage = `url("background/background${randomNumber}.jpg")`;
-    */
+    function getBackgroundImagePath(number) {
+      const fileNumber = String(number).padStart(2, "0");
+      return `${fileNumber}.jpg`;
+    }
 
-    document.body.style.backgroundImage = `url("background${randomNumber}.jpg")`;
+    /* =========================================================
+       EDIT AREA 3: Text fallback
+       如果某个背景编号没有匹配到上面的范围，显示这里的文本。
+       ========================================================= */
+
+    const fallbackBackgroundInfo = {
+      name: "Unknown Website",
+      description: "Description text can be edited here.",
+      url: "Website URL can be edited here."
+    };
+
+    function getBackgroundInfo(number) {
+      return backgroundInfoGroups.find(group => {
+        return number >= group.start && number <= group.end;
+      }) || fallbackBackgroundInfo;
+    }
+
+    function updateBackgroundAndInfo() {
+      const randomNumber = Math.floor(Math.random() * totalBackgrounds) + 1;
+      const imagePath = getBackgroundImagePath(randomNumber);
+      const info = getBackgroundInfo(randomNumber);
+
+      document.body.style.backgroundImage = `url("${imagePath}")`;
+      siteNameElement.textContent = info.name;
+      siteDescriptionElement.textContent = info.description;
+      siteUrlElement.textContent = info.url;
+    }
+
+    updateBackgroundAndInfo();
+    setInterval(updateBackgroundAndInfo, backgroundChangeInterval);
   </script>
 
 </body>
