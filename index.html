@@ -230,7 +230,7 @@
 
     <div class="nav-item nav-link project-name current">The Unquiet Page</div>
     <div id="introLink" class="nav-item nav-link intro">Intro</div>
-    <a class="nav-item nav-link working-process" href="https://antuyaran.github.io/workprocess/">Working Process</a>
+    <a class="nav-item nav-link working-process" href="https://antuyaran.github.io/collection/">Collection</a>
 
     <!-- ==============================
          BACKGROUND INFO TEXT OUTPUT
@@ -248,16 +248,10 @@
        Navigation Links
        ============================== */
 
-    const introPages = [
-      "https://antuyaran.github.io/Intro1/",
-      "https://antuyaran.github.io/Intro2/"
-    ];
-
     const introLink = document.getElementById("introLink");
 
     introLink.addEventListener("click", () => {
-      const randomIntroIndex = Math.floor(Math.random() * introPages.length);
-      window.location.href = introPages[randomIntroIndex];
+      window.location.href = "https://antuyaran.github.io/Intro1/";
     });
 
     /* ==============================
