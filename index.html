@@ -7,6 +7,19 @@
   <title>The Unquiet Page</title>
 
   <style>
+        @font-face {
+          font-family: "AT-Medium";
+          src:
+            local("American Typewriter Medium"),
+            local("AmericanTypewriter-Medium"),
+            local("American Typewriter"),
+            url("./American%20Typewriter%20Medium.ttf") format("truetype"),
+            url("./American%20Typewriter%20Medium%282%29.ttf") format("truetype");
+          font-weight: 500;
+          font-style: normal;
+          font-display: block;
+        }
+
     /* ==============================
        Basic Reset
        ============================== */
@@ -23,7 +36,7 @@
       height: 100%;
       overflow: hidden;
 
-      font-family: "American Typewriter Medium", "American Typewriter", "Courier New", monospace;
+      font-family: "AT-Medium", "American Typewriter Medium", "American Typewriter", "Courier New", monospace;
       background: #ffffff;
     }
 
@@ -87,7 +100,7 @@
       align-self: start;
       justify-self: start;
 
-      font-family: "American Typewriter Medium", "American Typewriter", "Courier New", monospace;
+      font-family: "AT-Medium", "American Typewriter Medium", "American Typewriter", "Courier New", monospace;
       font-weight: 500;
       font-size: 15pt;
       line-height: 1;
